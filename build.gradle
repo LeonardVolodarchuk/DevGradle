@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+}
+
+group 'goit'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.projectlombok:lombok:1.18.+'
+}
+
+ext {
+    four = tasks.register('four') {
+        doLast {
+            println("Task 4, last.")
+        }
+        doFirst {
+            print("Task 4, first. -> ")
+        }
+    }
+
+    tree = tasks.register('tree') {
+        doFirst {
+            println("Task 3")
+        }
+    }
+
+    one = tasks.register('one')  {
+        doLast {
+            println("Task 1.")
+        }
+    }
+
+    two = tasks.register('two') {
+        doLast {
+            println("Task 2.")
+        }
+    }
+}
+
+one.configure { mustRunAfter(ext.four) }
+two.configure { dependsOn(ext.one) }
+tree.configure { finalizedBy(ext.four) }
+ext.four.configure { shouldRunAfter(ext.tree) }
+
+test {
+    useJUnitPlatform()
+}
